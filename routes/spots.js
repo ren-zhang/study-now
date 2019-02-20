@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const StudySpot = require("../models/studySpot");
+const middleware = require("../middleware");
 
 // INDEX - show all spots
 router.get("/", function(req, res){
@@ -15,7 +16,7 @@ router.get("/", function(req, res){
 });
 
 // CREATE - add new spot to DB
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
     // get data from form and add to spot array
     var name = req.body.name;
     var image = req.body.image;
@@ -37,7 +38,7 @@ router.post("/", isLoggedIn, function(req, res){
 });
 
 // NEW - show form to create new spot
-router.get("/new", isLoggedIn, function(req, res){
+router.get("/new", middleware.isLoggedIn, function(req, res){
    res.render("spots/new"); 
 });
 
@@ -54,11 +55,33 @@ router.get("/:id", function(req, res){
     });
 });
 
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
+// Edit studyspot route
+router.get("/:id/edit", middleware.checkSpotOwnership, function(req, res) {
+    StudySpot.findById(req.params.id, function(err, foundSpot) {
+        res.render("spots/edit", {spot: foundSpot});
+    });
+});
+// Update studyspot route
+
+router.put("/:id", middleware.checkSpotOwnership, function(req, res) {
+    StudySpot.findOneAndUpdate(req.params.id, req.body.spot, function(err, updatedSpot) {
+        if (err) {
+            res.redirect("/spots");
+        } else {
+            res.redirect("/spots/" + req.params.id);
+        }
+    });
+});
+
+// Delete studyspot route
+router.delete("/:id", middleware.checkSpotOwnership, function(req, res) {
+    StudySpot.findOneAndDelete(req.params.id, function(err) {
+        if (err) {
+            res.redirect("/spots");
+        } else {
+            res.redirect("/spots");
+        }
+    })
+})
 
 module.exports = router;
