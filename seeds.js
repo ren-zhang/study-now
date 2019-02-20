@@ -21,33 +21,29 @@ var data = [
 ]
 
 function seedDB() {    
-    StudySpot.remove({}, function (err) {
-        if (err) {
-            console.log(err);
-        }
-        console.log("Study-spots removed");
-        data.forEach(function (seed) {
-            StudySpot.create(seed, function (err, spot) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log("Created study-spot");
-                    Comment.create(
-                        {
-                            text: "No internet :(",
-                            author: "Ren"
-                        }, function (err, comment) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                spot.comments.push(comment);
-                                spot.save();
-                                console.log("Created new comment");
-                            }
-                    });
-                }
-            });
-        });    
+    StudySpot.deleteMany({}, function (err) {
+        // data.forEach(function (seed) {
+        //     StudySpot.create(seed, function (err, spot) {
+        //         if (err) {
+        //             console.log(err);
+        //         } else {
+        //             console.log("Created study-spot");
+        //             Comment.create(
+        //                 {
+        //                     text: "No internet :(",
+        //                     author: "Ren"
+        //                 }, function (err, comment) {
+        //                     if (err) {
+        //                         console.log(err);
+        //                     } else {
+        //                         spot.comments.push(comment);
+        //                         spot.save();
+        //                         console.log("Created new comment");
+        //                     }
+        //             });
+        //         }
+        //     });
+        // });    
     });
 }
 

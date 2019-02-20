@@ -17,23 +17,27 @@ router.get("/new", isLoggedIn, function(req, res){
 
 // Comments create
 router.post("/",isLoggedIn,function(req, res){
-   //lookup spot using ID
-   StudySpot.findById(req.params.id, function(err, spot){
-       if(err){
-           console.log(err);
-           res.redirect("/spots");
+    //lookup spot using ID
+    StudySpot.findById(req.params.id, function(err, spot){
+        if(err){
+            console.log(err);
+            res.redirect("/spots");
        } else {
         Comment.create(req.body.comment, function(err, comment){
-           if(err){
-               console.log(err);
+            if(err){
+                console.log(err);
            } else {
-               spot.comments.push(comment);
-               spot.save();
-               res.redirect('/spots/' + spot._id);
-           }
+                // add username and id to comment
+                comment.author.id = req.user._id;
+                comment.author.username = req.user.username;
+                comment.save();
+                spot.comments.push(comment);
+                spot.save();
+                res.redirect('/spots/' + spot._id);
+            }
         });
-       }
-   });
+        }
+    });
 });
 
 function isLoggedIn(req, res, next){

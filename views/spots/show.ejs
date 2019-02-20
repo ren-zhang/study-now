@@ -15,6 +15,9 @@
                 <div class="caption-full">
                     <h4><a><%= spot.name %></a></h4>
                     <p><%= spot.description %></p>
+                    <p>
+                        <em>Submitted by <%= spot.author.username%></em>
+                    </p>
                 </div>
             </div>
             <div class="well">
@@ -25,7 +28,7 @@
                 <% spot.comments.forEach(function (comment) { %>
                     <div class="row">
                         <div class="col-md-12" >
-                            <strong><%= comment.author %></strong>
+                            <strong><%= comment.author.username %></strong>
                             <span class="pull-right">10 days ago</span>
                             <p>
                                 <%= comment.text %>

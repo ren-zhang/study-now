@@ -15,12 +15,16 @@ router.get("/", function(req, res){
 });
 
 // CREATE - add new spot to DB
-router.post("/", function(req, res){
+router.post("/", isLoggedIn, function(req, res){
     // get data from form and add to spot array
     var name = req.body.name;
     var image = req.body.image;
     var desc = req.body.description;
-    var newSpot = {name: name, image: image, description: desc}
+    var author = {
+        id: req.user._id, 
+        username: req.user.username
+    }
+    var newSpot = {name: name, image: image, description: desc, author: author}
     // Create a new campground and save to DB
     StudySpot.create(newSpot, function(err, newlyCreated){
         if(err){
@@ -33,7 +37,7 @@ router.post("/", function(req, res){
 });
 
 // NEW - show form to create new spot
-router.get("/new", function(req, res){
+router.get("/new", isLoggedIn, function(req, res){
    res.render("spots/new"); 
 });
 
@@ -44,7 +48,6 @@ router.get("/:id", function(req, res){
         if(err){
             console.log(err);
         } else {
-            console.log(foundSpot)
             //render show template with that campground
             res.render("spots/show", {spot: foundSpot});
         }
